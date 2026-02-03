@@ -1,334 +1,294 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubham's Pro Expense Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <title>Shubham's Expense Pro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --success: #10b981;
-            --danger: #ef4444;
-            --dark-bg: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --md-primary: #6200ee;
+            --md-secondary: #03dac6;
+            --md-bg: #f5f5f5;
+            --md-surface: #ffffff;
+            --md-error: #b00020;
+            --md-success: #4caf50;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--dark-bg);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--text-main);
-            padding: 20px;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-bg);
+            margin: 0;
+            padding-top: 56px; /* Space for the header */
+            padding-bottom: 80px; /* Space for the bottom FAB */
+            overflow-x: hidden;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
+        /* Android Style Header */
         header {
-            text-align: center;
-            margin-bottom: 25px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 56px;
+            background-color: var(--md-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 1000;
         }
 
         header h1 {
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-            background: linear-gradient(to right, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0;
         }
 
-        /* Summary Bar */
-        .net-worth-bar {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* Account Switcher */
-        .account-scroll {
+        /* Account Navigation (Swipeable) */
+        .account-bar {
+            background: white;
+            padding: 12px 16px;
             display: flex;
             gap: 10px;
             overflow-x: auto;
-            padding-bottom: 15px;
-            scrollbar-width: none;
+            border-bottom: 1px solid #e0e0e0;
         }
-        .account-scroll::-webkit-scrollbar { display: none; }
+        .account-bar::-webkit-scrollbar { display: none; }
 
-        .acc-tab {
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 14px;
-            cursor: pointer;
-            white-space: nowrap;
-            font-size: 0.85rem;
-            border: 1px solid transparent;
-            transition: 0.3s;
-        }
-        .acc-tab.active {
-            background: var(--primary);
-            border-color: var(--primary-light);
-        }
-
-        .btn-new-acc {
-            background: transparent;
-            border: 1px dashed var(--text-muted);
-            color: var(--text-muted);
-            padding: 8px 15px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        /* Main Display */
-        .display-card {
-            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
-            padding: 25px;
+        .acc-chip {
+            padding: 8px 16px;
+            background: #eee;
             border-radius: 20px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: 0.2s;
         }
-
-        .display-card p { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; margin-bottom: 5px; }
-        .display-card h2 { font-size: 2.2rem; margin-bottom: 15px; }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .stat-item h4 { font-size: 0.7rem; opacity: 0.7; }
-        .stat-item p { font-size: 1rem; font-weight: 700; opacity: 1; }
-
-        /* Form */
-        form { margin-bottom: 25px; }
-        .input-group { display: flex; flex-direction: column; gap: 10px; }
-        input, select {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 12px;
+        .acc-chip.active {
+            background: var(--md-primary);
             color: white;
-            outline: none;
-            font-family: inherit;
-        }
-        input:focus { border-color: var(--primary); }
-
-        .btn-submit {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 5px;
         }
 
-        /* History */
-        .history-section h3 { font-size: 1rem; margin-bottom: 15px; display: flex; justify-content: space-between; }
-        .history-list { list-style: none; max-height: 200px; overflow-y: auto; }
-        .history-item {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 15px;
-            border-radius: 12px;
-            margin-bottom: 8px;
+        /* Balance Card */
+        .card {
+            background: var(--md-surface);
+            margin: 16px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .balance-label { color: #666; font-size: 12px; text-transform: uppercase; }
+        .balance-val { font-size: 32px; font-weight: 700; margin: 8px 0; }
+
+        .row { display: flex; justify-content: space-between; margin-top: 15px; }
+        .stat-box { flex: 1; }
+        .stat-label { font-size: 11px; color: #888; }
+        .stat-val { font-size: 16px; font-weight: 500; }
+
+        /* Transaction List */
+        .history-title { padding: 0 16px; font-size: 14px; color: #666; font-weight: 500; }
+        .list-container { background: white; margin-top: 8px; }
+        .list-item {
             display: flex;
             justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid #eee;
             align-items: center;
         }
-        .history-item.income { border-right: 4px solid var(--success); }
-        .history-item.expense { border-right: 4px solid var(--danger); }
+        .list-item .name { font-weight: 400; color: #333; }
+        .list-item .amt { font-weight: 700; }
 
-        .empty-state { text-align: center; color: var(--text-muted); padding: 20px; font-size: 0.9rem; }
-
-        /* Modal */
-        .modal {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center;
+        /* Floating Action Button (FAB) */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background-color: var(--md-secondary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            color: #333;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            z-index: 999;
         }
-        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 20px; width: 320px; text-align: center; }
+
+        /* Full Screen Form Overlay */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .overlay input, .overlay select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .btn-full {
+            background: var(--md-primary);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .close-btn { align-self: flex-end; font-size: 24px; padding: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <header>
-            <h1>SHUBHAM'S PRO TRACKER</h1>
-        </header>
+    <header>
+        <h1>Shubham's Expense Pro</h1>
+    </header>
 
-        <div class="net-worth-bar">
-            Total Combined Wealth: <span id="total-wealth" style="color: white; font-weight: 700;">₹0</span>
+    <div class="account-bar" id="acc-bar">
         </div>
 
-        <div class="account-scroll" id="account-scroll">
+    <div class="card">
+        <div class="balance-label" id="acc-name-label">Main Wallet</div>
+        <div class="balance-val" id="total-bal">₹0.00</div>
+        
+        <div class="row">
+            <div class="stat-box">
+                <div class="stat-label">INCOME</div>
+                <div class="stat-val" id="total-inc" style="color: var(--md-success)">+₹0</div>
             </div>
-        <button class="btn-new-acc" onclick="toggleModal(true)">+ Add Account</button>
-
-        <div class="display-card" style="margin-top: 20px;">
-            <p id="curr-acc-label">Active Balance</p>
-            <h2 id="balance-val">₹0.00</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <h4>INCOME</h4>
-                    <p id="inc-val" style="color: var(--success)">+₹0</p>
-                </div>
-                <div class="stat-item">
-                    <h4>EXPENSE</h4>
-                    <p id="exp-val" style="color: var(--danger)">-₹0</p>
-                </div>
+            <div class="stat-box" style="text-align: right;">
+                <div class="stat-label">EXPENSES</div>
+                <div class="stat-val" id="total-exp" style="color: var(--md-error)">-₹0</div>
             </div>
         </div>
+    </div>
 
+    <div class="history-title">RECENT TRANSACTIONS</div>
+    <div class="list-container" id="history-list">
+        </div>
+
+    <button class="fab" onclick="toggleOverlay(true)">+</button>
+
+    <div class="overlay" id="form-overlay">
+        <div class="close-btn" onclick="toggleOverlay(false)">✕</div>
+        <h2>New Transaction</h2>
         <form id="tx-form">
-            <div class="input-group">
-                <input type="text" id="tx-name" placeholder="Item Name (e.g., Coffee)" required>
-                <div style="display: flex; gap: 10px;">
-                    <input type="number" id="tx-amount" placeholder="Amount" style="flex: 2;" required>
-                    <select id="tx-type" style="flex: 1;">
-                        <option value="expense">Expense</option>
-                        <option value="income">Income</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-submit">Add Transaction</button>
-            </div>
+            <input type="text" id="name" placeholder="Description" required>
+            <input type="number" id="amount" placeholder="Amount (₹)" required>
+            <select id="type">
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+            </select>
+            <button type="submit" class="btn-full">Save Transaction</button>
         </form>
-
-        <div class="history-section">
-            <h3>History <button onclick="clearCurrentAccount()" style="font-size: 0.7rem; background: none; border: none; color: var(--danger); cursor: pointer;">Clear Account</button></h3>
-            <ul id="history-list" class="history-list"></ul>
-        </div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+        <button onclick="addAccountPrompt()" class="btn-full" style="background: #333;">Create New Account</button>
     </div>
 
-    <div class="modal" id="acc-modal">
-        <div class="modal-content">
-            <h3 style="margin-bottom: 20px;">New Account Name</h3>
-            <input type="text" id="new-acc-input" placeholder="e.g., Bank, Wallet, Savings" style="width: 100%; margin-bottom: 15px;">
-            <button class="btn-submit" onclick="addAccount()" style="width: 100%;">Create Account</button>
-            <button onclick="toggleModal(false)" style="margin-top: 10px; background: none; border: none; color: var(--text-muted); cursor: pointer;">Cancel</button>
-        </div>
-    </div>
-
+    <script src="cordova.js"></script>
     <script>
-        // Store data as: { "AccountName": [ {name, amount, type}, ... ] }
-        let storageData = JSON.parse(localStorage.getItem('shubham_v3')) || { "Cash": [] };
-        let activeAccount = Object.keys(storageData)[0];
-
-        const historyList = document.getElementById('history-list');
-        const accScroll = document.getElementById('account-scroll');
+        // Data Structure
+        let db = JSON.parse(localStorage.getItem('shubham_app_db')) || { "Cash": [] };
+        let currentAcc = Object.keys(db)[0];
 
         function init() {
             renderAccounts();
-            renderStats();
-            calculateWealth();
+            renderUI();
         }
 
         function renderAccounts() {
-            accScroll.innerHTML = '';
-            Object.keys(storageData).forEach(acc => {
-                const div = document.createElement('div');
-                div.className = `acc-tab ${acc === activeAccount ? 'active' : ''}`;
-                div.innerText = acc;
-                div.onclick = () => { activeAccount = acc; init(); };
-                accScroll.appendChild(div);
+            const bar = document.getElementById('acc-bar');
+            bar.innerHTML = '';
+            Object.keys(db).forEach(acc => {
+                const chip = document.createElement('div');
+                chip.className = `acc-chip ${acc === currentAcc ? 'active' : ''}`;
+                chip.innerText = acc;
+                chip.onclick = () => { currentAcc = acc; init(); };
+                bar.appendChild(chip);
             });
         }
 
-        function renderStats() {
-            const txs = storageData[activeAccount];
-            historyList.innerHTML = '';
+        function renderUI() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
             
             let bal = 0, inc = 0, exp = 0;
+            const txs = db[currentAcc];
 
-            if(txs.length === 0) {
-                historyList.innerHTML = '<div class="empty-state">No transactions in this account.</div>';
-            }
+            document.getElementById('acc-name-label').innerText = currentAcc;
 
             txs.forEach(t => {
-                if(t.type === 'income') {
-                    inc += t.amount;
-                    bal += t.amount;
-                } else {
-                    exp += t.amount;
-                    bal -= t.amount;
-                }
+                if(t.type === 'income') { inc += t.amount; bal += t.amount; }
+                else { exp += t.amount; bal -= t.amount; }
 
-                const li = document.createElement('li');
-                li.className = `history-item ${t.type}`;
-                li.innerHTML = `<span>${t.name}</span> <strong>${t.type === 'income' ? '+' : '-'}₹${t.amount.toLocaleString()}</strong>`;
-                historyList.appendChild(li);
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <span class="name">${t.name}</span>
+                    <span class="amt" style="color: ${t.type === 'income' ? 'var(--md-success)' : 'var(--md-error)'}">
+                        ${t.type === 'income' ? '+' : '-'}₹${t.amount.toLocaleString()}
+                    </span>
+                `;
+                list.prepend(div);
             });
 
-            document.getElementById('curr-acc-label').innerText = activeAccount + " Balance";
-            document.getElementById('balance-val').innerText = `₹${bal.toLocaleString()}`;
-            document.getElementById('inc-val').innerText = `+₹${inc.toLocaleString()}`;
-            document.getElementById('exp-val').innerText = `-₹${exp.toLocaleString()}`;
-            
-            localStorage.setItem('shubham_v3', JSON.stringify(storageData));
+            document.getElementById('total-bal').innerText = `₹${bal.toLocaleString()}`;
+            document.getElementById('total-inc').innerText = `+₹${inc.toLocaleString()}`;
+            document.getElementById('total-exp').innerText = `-₹${exp.toLocaleString()}`;
+
+            localStorage.setItem('shubham_app_db', JSON.stringify(db));
         }
 
-        function calculateWealth() {
-            let totalWealth = 0;
-            Object.values(storageData).forEach(accountTxs => {
-                accountTxs.forEach(t => {
-                    totalWealth += (t.type === 'income' ? t.amount : -t.amount);
-                });
-            });
-            document.getElementById('total-wealth').innerText = `₹${totalWealth.toLocaleString()}`;
+        function toggleOverlay(show) {
+            document.getElementById('form-overlay').style.display = show ? 'flex' : 'none';
         }
 
         document.getElementById('tx-form').onsubmit = (e) => {
             e.preventDefault();
             const tx = {
-                name: document.getElementById('tx-name').value,
-                amount: parseFloat(document.getElementById('tx-amount').value),
-                type: document.getElementById('tx-type').value
+                name: document.getElementById('name').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                type: document.getElementById('type').value
             };
-            storageData[activeAccount].push(tx);
+            db[currentAcc].push(tx);
             document.getElementById('tx-form').reset();
+            toggleOverlay(false);
             init();
         };
 
-        function toggleModal(show) { document.getElementById('acc-modal').style.display = show ? 'flex' : 'none'; }
-
-        function addAccount() {
-            const name = document.getElementById('new-acc-input').value.trim();
-            if(name && !storageData[name]) {
-                storageData[name] = [];
-                activeAccount = name;
-                toggleModal(false);
-                document.getElementById('new-acc-input').value = '';
+        function addAccountPrompt() {
+            const name = prompt("Enter Account Name (e.g. Bank, Savings):");
+            if(name && !db[name]) {
+                db[name] = [];
+                currentAcc = name;
+                toggleOverlay(false);
                 init();
             }
         }
 
-        function clearCurrentAccount() {
-            if(confirm(`Delete all data for ${activeAccount}?`)) {
-                storageData[activeAccount] = [];
-                init();
-            }
-        }
-
-        init();
+        // Initialize on Load
+        window.onload = init;
     </script>
 </body>
 </html>
