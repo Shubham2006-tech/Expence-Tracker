@@ -3,38 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Shubham's Expense Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                              radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                              radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .balance-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .balance-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .balance-card h2 {
+            font-size: 2.2rem;
+            margin-top: 5px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-box.income { border-bottom: 4px solid var(--success); }
+        .stat-box.expense { border-bottom: 4px solid var(--danger); }
+
+        .stat-box h4 { font-size: 0.75rem; color: var(--text-muted); }
+        .stat-box p { font-size: 1.1rem; font-weight: 700; margin-top: 5px; }
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+
+        form input, form select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: inherit;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        form input:focus { border-color: var(--primary); ring: 2px solid var(--primary); }
+
+        .btn-add {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 25px;
+        }
+
+        .btn-add:hover { background: #4f46e5; transform: translateY(-1px); }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-list {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        .history-list li {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #ddd;
+        }
+
+        .history-list li.income-item { border-left-color: var(--success); }
+        .history-list li.expense-item { border-left-color: var(--danger); }
+
+        .btn-clear {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            font-size: 0.8rem;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .btn-clear:hover { color: var(--danger); }
+
+        .item-name { font-weight: 500; }
+        .item-amt { font-weight: 700; }
+    </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>Expense Tracker</h2>
+        <header>
+            <h1>SHUBHAM'S TRACKER</h1>
+        </header>
 
-        <!-- Balance Display -->
-        <div class="balance-container">
-            <p>Current Balance:</p>
-            <h3 id="balance">₹0.00</h3>
+        <div class="balance-card">
+            <p>Current Balance</p>
+            <h2 id="total-balance">₹0.00</h2>
         </div>
 
-        <!-- Transaction Form -->
-        <form id="transaction-form">
-            <input type="text" id="name" placeholder="Transaction Name" required>
-            <input type="number" id="amount" placeholder="Amount (₹)" required>
-            <select id="type">
+        <div class="stats-container">
+            <div class="stat-box income">
+                <h4>INCOME</h4>
+                <p id="total-income" class="text-success">+₹0.00</p>
+            </div>
+            <div class="stat-box expense">
+                <h4>EXPENSE</h4>
+                <p id="total-expense" class="text-danger">-₹0.00</p>
+            </div>
+        </div>
+
+        <form id="expense-form">
+            <input type="text" id="desc" placeholder="What was it for?" required>
+            <input type="number" id="amt" placeholder="Amount (₹)" required>
+            <select id="trans-type">
                 <option value="income">Income</option>
                 <option value="expense">Expense</option>
             </select>
-            <button type="submit">Add Transaction</button>
+            <button type="submit" class="btn-add">Add Transaction</button>
         </form>
 
-        <!-- Transaction History -->
-        <h3>Transaction History</h3>
-        <ul id="transactions" class="transaction-list"></ul>
-        <button id="clear-history">Clear History</button>
-
+        <div class="history-header">
+            <h3>History</h3>
+            <button class="btn-clear" id="clear-all">Clear All</button>
+        </div>
+        
+        <ul id="history-list" class="history-list">
+            </ul>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const balanceDisplay = document.getElementById('total-balance');
+        const incomeDisplay = document.getElementById('total-income');
+        const expenseDisplay = document.getElementById('total-expense');
+        const list = document.getElementById('history-list');
+        const form = document.getElementById('expense-form');
+        const descInput = document.getElementById('desc');
+        const amtInput = document.getElementById('amt');
+        const typeInput = document.getElementById('trans-type');
+        const clearBtn = document.getElementById('clear-all');
+
+        // Initial Data from LocalStorage
+        let transactions = JSON.parse(localStorage.getItem('shubham_data')) || [];
+
+        function updateUI() {
+            list.innerHTML = '';
+            
+            let total = 0;
+            let incomeTotal = 0;
+            let expenseTotal = 0;
+
+            transactions.forEach((transaction, index) => {
+                const isIncome = transaction.type === 'income';
+                const sign = isIncome ? '+' : '-';
+                
+                // Calculate totals
+                if(isIncome) {
+                    incomeTotal += transaction.amount;
+                    total += transaction.amount;
+                } else {
+                    expenseTotal += transaction.amount;
+                    total -= transaction.amount;
+                }
+
+                // Create List Item
+                const li = document.createElement('li');
+                li.classList.add(isIncome ? 'income-item' : 'expense-item');
+                li.innerHTML = `
+                    <span class="item-name">${transaction.name}</span>
+                    <span class="item-amt ${isIncome ? 'text-success' : 'text-danger'}">
+                        ${sign}₹${transaction.amount.toLocaleString()}
+                    </span>
+                `;
+                list.appendChild(li);
+            });
+
+            // Update Numbers
+            balanceDisplay.innerText = `₹${total.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            incomeDisplay.innerText = `+₹${incomeTotal.toLocaleString()}`;
+            expenseDisplay.innerText = `-₹${expenseTotal.toLocaleString()}`;
+            
+            // Save to Storage
+            localStorage.setItem('shubham_data', JSON.stringify(transactions));
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const newTransaction = {
+                name: descInput.value,
+                amount: parseFloat(amtInput.value),
+                type: typeInput.value
+            };
+
+            transactions.push(newTransaction);
+            updateUI();
+            form.reset();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if(confirm("Shubham, do you want to delete all transaction history?")) {
+                transactions = [];
+                updateUI();
+            }
+        });
+
+        // Initialize
+        updateUI();
+    </script>
 </body>
 </html>
