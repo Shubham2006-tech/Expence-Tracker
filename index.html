@@ -1,218 +1,254 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-    <title>Shubham's Expense Pro</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Expense Pro | Professional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --md-primary: #6200ee;
-            --md-secondary: #03dac6;
-            --md-bg: #f5f5f5;
-            --md-surface: #ffffff;
-            --md-error: #b00020;
-            --md-success: #4caf50;
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #64748b;
+            --success: #10b981;
+            --error: #ef4444;
+            --border: #e2e8f0;
+            --radius: 16px;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
+
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding-bottom: 100px;
         }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--md-bg);
-            margin: 0;
-            padding-top: 56px; /* Space for the header */
-            padding-bottom: 80px; /* Space for the bottom FAB */
-            overflow-x: hidden;
-        }
-
-        /* Android Style Header */
+        /* Professional Header */
         header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 56px;
-            background-color: var(--md-primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            z-index: 1000;
-        }
-
-        header h1 {
-            font-size: 20px;
-            font-weight: 500;
-            margin: 0;
-        }
-
-        /* Account Navigation (Swipeable) */
-        .account-bar {
-            background: white;
-            padding: 12px 16px;
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .account-bar::-webkit-scrollbar { display: none; }
-
-        .acc-chip {
-            padding: 8px 16px;
-            background: #eee;
-            border-radius: 20px;
-            font-size: 14px;
-            white-space: nowrap;
-            transition: 0.2s;
-        }
-        .acc-chip.active {
-            background: var(--md-primary);
-            color: white;
-        }
-
-        /* Balance Card */
-        .card {
-            background: var(--md-surface);
-            margin: 16px;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-        }
-
-        .balance-label { color: #666; font-size: 12px; text-transform: uppercase; }
-        .balance-val { font-size: 32px; font-weight: 700; margin: 8px 0; }
-
-        .row { display: flex; justify-content: space-between; margin-top: 15px; }
-        .stat-box { flex: 1; }
-        .stat-label { font-size: 11px; color: #888; }
-        .stat-val { font-size: 16px; font-weight: 500; }
-
-        /* Transaction List */
-        .history-title { padding: 0 16px; font-size: 14px; color: #666; font-weight: 500; }
-        .list-container { background: white; margin-top: 8px; }
-        .list-item {
+            background: var(--surface);
+            padding: 20px 20px;
             display: flex;
             justify-content: space-between;
-            padding: 16px;
-            border-bottom: 1px solid #eee;
             align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .list-item .name { font-weight: 400; color: #333; }
-        .list-item .amt { font-weight: 700; }
 
-        /* Floating Action Button (FAB) */
+        header h1 { font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--primary); }
+
+        /* Net Worth Summary */
+        .summary-card {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            margin: 20px;
+            padding: 24px;
+            border-radius: var(--radius);
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+        }
+
+        .summary-label { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
+        .summary-val { font-size: 2rem; font-weight: 700; margin: 5px 0 20px 0; }
+
+        /* Account Chips */
+        .account-scroll {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 15px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .account-scroll::-webkit-scrollbar { display: none; }
+
+        .chip {
+            padding: 10px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: 0.3s;
+            color: var(--text-secondary);
+        }
+
+        .chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        /* Transaction List */
+        .section-header {
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .section-header h2 { font-size: 0.9rem; color: var(--text-secondary); font-weight: 600; }
+
+        .list-container { margin: 0 20px; }
+
+        .list-item {
+            background: var(--surface);
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .tx-info { display: flex; flex-direction: column; }
+        .tx-name { font-weight: 600; font-size: 0.95rem; }
+        .tx-date { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+
+        .tx-amount { font-weight: 700; font-size: 1rem; }
+        .tx-amount.inc { color: var(--success); }
+        .tx-amount.exp { color: var(--error); }
+
+        /* Modern FAB */
         .fab {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 56px;
-            height: 56px;
-            background-color: var(--md-secondary);
-            border-radius: 50%;
+            bottom: 30px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 18px;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            color: #333;
-            font-size: 24px;
+            color: white;
+            font-size: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
             border: none;
             cursor: pointer;
-            z-index: 999;
         }
 
-        /* Full Screen Form Overlay */
+        /* Bottom Sheet Form */
+        .modal {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            background: var(--surface);
+            border-radius: 24px 24px 0 0;
+            padding: 30px 20px;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+            box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+        }
+
+        .modal.active { bottom: 0; }
+
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: white;
-            z-index: 2000;
+            background: rgba(0,0,0,0.5);
             display: none;
-            flex-direction: column;
-            padding: 20px;
+            z-index: 1999;
         }
 
-        .overlay input, .overlay select {
+        input, select {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
         }
 
-        .btn-full {
-            background: var(--md-primary);
+        input:focus { border-color: var(--primary); }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
             color: white;
-            padding: 15px;
             border: none;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
         }
 
-        .close-btn { align-self: flex-end; font-size: 24px; padding: 10px; cursor: pointer; }
+        .btn-secondary {
+            background: none;
+            color: var(--primary);
+            width: 100%;
+            padding: 10px;
+            border: none;
+            margin-top: 10px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Shubham's Expense Pro</h1>
+        <h1>Expense Pro</h1>
+        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);" id="current-date"></div>
     </header>
 
-    <div class="account-bar" id="acc-bar">
-        </div>
-
-    <div class="card">
-        <div class="balance-label" id="acc-name-label">Main Wallet</div>
-        <div class="balance-val" id="total-bal">₹0.00</div>
-        
-        <div class="row">
-            <div class="stat-box">
-                <div class="stat-label">INCOME</div>
-                <div class="stat-val" id="total-inc" style="color: var(--md-success)">+₹0</div>
+    <div class="summary-card">
+        <div class="summary-label">Total Balance</div>
+        <div class="summary-val" id="net-worth">₹0.00</div>
+        <div style="display: flex; gap: 20px;">
+            <div>
+                <div class="summary-label" style="font-size: 0.6rem;">Monthly Income</div>
+                <div style="font-weight: 600;" id="total-inc">+₹0</div>
             </div>
-            <div class="stat-box" style="text-align: right;">
-                <div class="stat-label">EXPENSES</div>
-                <div class="stat-val" id="total-exp" style="color: var(--md-error)">-₹0</div>
+            <div>
+                <div class="summary-label" style="font-size: 0.6rem;">Monthly Expense</div>
+                <div style="font-weight: 600;" id="total-exp">-₹0</div>
             </div>
         </div>
     </div>
 
-    <div class="history-title">RECENT TRANSACTIONS</div>
+    <div class="account-scroll" id="acc-bar"></div>
+
+    <div class="section-header">
+        <h2 id="active-acc-name">Recent Activity</h2>
+        <span style="font-size: 0.7rem; color: var(--primary); font-weight: 600;">VIEW ALL</span>
+    </div>
+
     <div class="list-container" id="history-list">
         </div>
 
-    <button class="fab" onclick="toggleOverlay(true)">+</button>
+    <button class="fab" onclick="showModal()">+</button>
 
-    <div class="overlay" id="form-overlay">
-        <div class="close-btn" onclick="toggleOverlay(false)">✕</div>
-        <h2>New Transaction</h2>
+    <div class="overlay" id="overlay" onclick="hideModal()"></div>
+
+    <div class="modal" id="modal">
+        <h2 style="margin-top: 0; font-size: 1.2rem;">Add Transaction</h2>
         <form id="tx-form">
-            <input type="text" id="name" placeholder="Description" required>
+            <input type="text" id="name" placeholder="Description (e.g. Grocery)" required>
             <input type="number" id="amount" placeholder="Amount (₹)" required>
             <select id="type">
                 <option value="expense">Expense</option>
                 <option value="income">Income</option>
             </select>
-            <button type="submit" class="btn-full">Save Transaction</button>
+            <button type="submit" class="btn-submit">Confirm Transaction</button>
         </form>
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-        <button onclick="addAccountPrompt()" class="btn-full" style="background: #333;">Create New Account</button>
+        <button onclick="addAccountPrompt()" class="btn-secondary">+ Add New Account</button>
     </div>
 
-    <script src="cordova.js"></script>
     <script>
-        // Data Structure
-        let db = JSON.parse(localStorage.getItem('shubham_app_db')) || { "Cash": [] };
+        let db = JSON.parse(localStorage.getItem('expense_pro_db')) || { "Main Wallet": [] };
         let currentAcc = Object.keys(db)[0];
 
         function init() {
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
             renderAccounts();
             renderUI();
         }
@@ -222,7 +258,7 @@
             bar.innerHTML = '';
             Object.keys(db).forEach(acc => {
                 const chip = document.createElement('div');
-                chip.className = `acc-chip ${acc === currentAcc ? 'active' : ''}`;
+                chip.className = `chip ${acc === currentAcc ? 'active' : ''}`;
                 chip.innerText = acc;
                 chip.onclick = () => { currentAcc = acc; init(); };
                 bar.appendChild(chip);
@@ -233,35 +269,55 @@
             const list = document.getElementById('history-list');
             list.innerHTML = '';
             
-            let bal = 0, inc = 0, exp = 0;
+            let accBal = 0, totalInc = 0, totalExp = 0, netWorth = 0;
+
+            // Calculate Net Worth across ALL accounts
+            Object.keys(db).forEach(accKey => {
+                db[accKey].forEach(t => {
+                    if(t.type === 'income') netWorth += t.amount;
+                    else netWorth -= t.amount;
+                });
+            });
+
+            // Calculate current account specifics
             const txs = db[currentAcc];
+            document.getElementById('active-acc-name').innerText = `${currentAcc} Activity`;
 
-            document.getElementById('acc-name-label').innerText = currentAcc;
-
-            txs.forEach(t => {
-                if(t.type === 'income') { inc += t.amount; bal += t.amount; }
-                else { exp += t.amount; bal -= t.amount; }
+            txs.slice().reverse().forEach((t, index) => {
+                if(t.type === 'income') totalInc += t.amount;
+                else totalExp += t.amount;
 
                 const div = document.createElement('div');
                 div.className = 'list-item';
                 div.innerHTML = `
-                    <span class="name">${t.name}</span>
-                    <span class="amt" style="color: ${t.type === 'income' ? 'var(--md-success)' : 'var(--md-error)'}">
-                        ${t.type === 'income' ? '+' : '-'}₹${t.amount.toLocaleString()}
+                    <div class="tx-info">
+                        <span class="tx-name">${t.name}</span>
+                        <span class="tx-date">${t.date || 'Today'}</span>
+                    </div>
+                    <span class="tx-amount ${t.type === 'income' ? 'inc' : 'exp'}">
+                        ${t.type === 'income' ? '+' : '-'}₹${t.amount.toLocaleString('en-IN')}
                     </span>
                 `;
-                list.prepend(div);
+                // Add long press to delete (simple click for this demo)
+                div.onclick = () => deleteTx(txs.length - 1 - index);
+                list.appendChild(div);
             });
 
-            document.getElementById('total-bal').innerText = `₹${bal.toLocaleString()}`;
-            document.getElementById('total-inc').innerText = `+₹${inc.toLocaleString()}`;
-            document.getElementById('total-exp').innerText = `-₹${exp.toLocaleString()}`;
+            document.getElementById('net-worth').innerText = `₹${netWorth.toLocaleString('en-IN')}`;
+            document.getElementById('total-inc').innerText = `+₹${totalInc.toLocaleString('en-IN')}`;
+            document.getElementById('total-exp').innerText = `-₹${totalExp.toLocaleString('en-IN')}`;
 
-            localStorage.setItem('shubham_app_db', JSON.stringify(db));
+            localStorage.setItem('expense_pro_db', JSON.stringify(db));
         }
 
-        function toggleOverlay(show) {
-            document.getElementById('form-overlay').style.display = show ? 'flex' : 'none';
+        function showModal() {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function hideModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.getElementById('overlay').style.display = 'none';
         }
 
         document.getElementById('tx-form').onsubmit = (e) => {
@@ -269,25 +325,32 @@
             const tx = {
                 name: document.getElementById('name').value,
                 amount: parseFloat(document.getElementById('amount').value),
-                type: document.getElementById('type').value
+                type: document.getElementById('type').value,
+                date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })
             };
             db[currentAcc].push(tx);
             document.getElementById('tx-form').reset();
-            toggleOverlay(false);
+            hideModal();
             init();
         };
 
         function addAccountPrompt() {
-            const name = prompt("Enter Account Name (e.g. Bank, Savings):");
+            const name = prompt("Enter Account Name (e.g. HDFC Bank, Office Cash):");
             if(name && !db[name]) {
                 db[name] = [];
                 currentAcc = name;
-                toggleOverlay(false);
+                hideModal();
                 init();
             }
         }
 
-        // Initialize on Load
+        function deleteTx(index) {
+            if(confirm("Delete this transaction?")) {
+                db[currentAcc].splice(index, 1);
+                init();
+            }
+        }
+
         window.onload = init;
     </script>
 </body>
